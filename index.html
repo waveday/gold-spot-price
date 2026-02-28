@@ -1,1 +1,210 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حاسبة سعر جنيه الذهب (8g عيار 21)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
+<body class="min-h-screen bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-3xl px-4 py-10">
+    <header class="mb-8">
+      <h1 class="text-2xl font-bold">حاسبة سعر جنيه الذهب (8 جرام عيار 21)</h1>
+      <p class="mt-2 text-slate-600">
+        أدخل سعر الأونصة بالدولار وسعر الدولار بالريال، وسيظهر لك سعر الجنيه بالريال (حساب نظري).
+      </p>
+    </header>
+
+    <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <label for="usdRate" class="block text-sm font-medium text-slate-700">سعر الدولار (ريال لكل 1$)</label>
+          <input id="usdRate" type="number" inputmode="decimal" step="0.01" value="535"
+                 class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500"
+                 placeholder="مثال: 535" />
+        </div>
+
+        <div>
+          <label for="ounceUsd" class="block text-sm font-medium text-slate-700">سعر الأونصة عالميًا ($)</label>
+          <input id="ounceUsd" type="number" inputmode="decimal" step="0.01" value="5250"
+                 class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500"
+                 placeholder="مثال: 5250" />
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <div class="text-sm text-slate-600">الوزن</div>
+          <div class="mt-1 text-lg font-semibold">8 جرام</div>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <div class="text-sm text-slate-600">العيار</div>
+          <div class="mt-1 text-lg font-semibold">21</div>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <div class="text-sm text-slate-600">أونصة (جرام)</div>
+          <div class="mt-1 text-lg font-semibold">31.1035</div>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-2xl bg-emerald-50 p-5 ring-1 ring-emerald-200">
+        <div class="text-sm font-medium text-emerald-800">سعر جنيه الذهب بالريال (تقريبي)</div>
+        <div class="mt-2 flex items-end gap-3">
+          <div id="result" class="text-3xl font-extrabold text-emerald-900">—</div>
+          <div class="pb-1 text-emerald-900/70">ريال</div>
+        </div>
+        <div class="mt-3 text-sm text-emerald-900/70">
+          ملاحظة: هذا السعر نظري (بدون مصنعية/عمولة/فارق سوق).
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <button id="resetBtn"
+                class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+          إعادة للقيم الافتراضية
+        </button>
+
+        <button id="copyBtn"
+                class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-300 hover:bg-slate-50">
+          نسخ السعر
+        </button>
+
+        <span id="toast" class="hidden text-sm text-slate-600"></span>
+      </div>
+
+      <details class="mt-6 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+        <summary class="cursor-pointer select-none text-sm font-semibold text-slate-800">
+          عرض المعادلة المستخدمة
+        </summary>
+        <div class="mt-3 text-sm text-slate-700 leading-7">
+          <div class="font-mono text-xs bg-slate-50 p-3 rounded-xl ring-1 ring-slate-200 overflow-x-auto">
+            priceRial =
+            (ounceUsd / 31.1035) * 8 * (21/24) * usdRate
+          </div>
+          <ul class="mt-3 list-disc pr-5 text-slate-600">
+            <li>نقسم سعر الأونصة على 31.1035 للحصول على سعر جرام 24.</li>
+            <li>نضرب × 8 (وزن الجنيه).</li>
+            <li>نحوّل من 24 إلى 21 عبر (21/24).</li>
+            <li>نحوّل من دولار إلى ريال عبر سعر الدولار.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <footer class="mt-8 text-xs text-slate-500">
+      يعمل بالكامل داخل المتصفح (بدون سيرفر/بدون إطار عمل).
+    </footer>
+  </main>
+
+  <script>
+    // Constants
+    const OUNCE_GRAMS = 31.1035;
+    const COIN_GRAMS = 8;
+    const KARAT_COIN = 21;
+    const KARAT_OUNCE = 24;
+
+    // Elements
+    const usdRateEl = document.getElementById("usdRate");
+    const ounceUsdEl = document.getElementById("ounceUsd");
+    const resultEl = document.getElementById("result");
+    const resetBtn = document.getElementById("resetBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const toastEl = document.getElementById("toast");
+
+    // Defaults
+    const DEFAULTS = { usdRate: 535, ounceUsd: 5250 };
+
+    // Format number with commas + 0 decimals by default (you can change)
+    function formatRial(n) {
+      if (!Number.isFinite(n)) return "—";
+      return new Intl.NumberFormat("ar-YE", { maximumFractionDigits: 0 }).format(n);
+    }
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.remove("hidden");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toastEl.classList.add("hidden"), 1800);
+    }
+
+    function computePriceRial(ounceUsd, usdRate) {
+      // priceRial = (ounceUsd / 31.1035) * 8 * (21/24) * usdRate
+      return (ounceUsd / OUNCE_GRAMS) * COIN_GRAMS * (KARAT_COIN / KARAT_OUNCE) * usdRate;
+    }
+
+    function readInputs() {
+      const usdRate = Number(usdRateEl.value);
+      const ounceUsd = Number(ounceUsdEl.value);
+      return { usdRate, ounceUsd };
+    }
+
+    function saveToLocalStorage({ usdRate, ounceUsd }) {
+      try {
+        localStorage.setItem("goldCoinCalc", JSON.stringify({ usdRate, ounceUsd }));
+      } catch (_) {}
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem("goldCoinCalc");
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj || !Number.isFinite(Number(obj.usdRate)) || !Number.isFinite(Number(obj.ounceUsd))) return null;
+        return { usdRate: Number(obj.usdRate), ounceUsd: Number(obj.ounceUsd) };
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function render() {
+      const { usdRate, ounceUsd } = readInputs();
+
+      // Basic validation
+      if (!(usdRate > 0) || !(ounceUsd > 0)) {
+        resultEl.textContent = "—";
+        return;
+      }
+
+      const price = computePriceRial(ounceUsd, usdRate);
+      resultEl.textContent = formatRial(price);
+
+      saveToLocalStorage({ usdRate, ounceUsd });
+    }
+
+    // Events
+    usdRateEl.addEventListener("input", render);
+    ounceUsdEl.addEventListener("input", render);
+
+    resetBtn.addEventListener("click", () => {
+      usdRateEl.value = DEFAULTS.usdRate;
+      ounceUsdEl.value = DEFAULTS.ounceUsd;
+      render();
+      showToast("تمت الإعادة للقيم الافتراضية");
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const txt = resultEl.textContent;
+      if (!txt || txt === "—") return showToast("لا يوجد رقم لنسخه");
+      try {
+        await navigator.clipboard.writeText(txt);
+        showToast("تم نسخ السعر");
+      } catch (_) {
+        showToast("لم يتمكن المتصفح من النسخ");
+      }
+    });
+
+    // Init
+    (function init() {
+      const saved = loadFromLocalStorage();
+      if (saved) {
+        usdRateEl.value = saved.usdRate;
+        ounceUsdEl.value = saved.ounceUsd;
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
