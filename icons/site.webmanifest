@@ -1,0 +1,26 @@
+{
+  "name": "حاسبة جنيه الذهب",
+  "short_name": "ذهب",
+  "description": "حاسبة سعر جنيه الذهب (8g عيار 21) بالريال تعمل بدون إنترنت بعد أول تحميل.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
