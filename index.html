@@ -31,7 +31,7 @@
     <header class="mb-8">
       <h1 class="text-2xl font-bold">حاسبة سعر جنيه الذهب (8 جرام عيار 21)</h1>
       <p class="mt-2 text-slate-600">
-        تعمل كـ PWA وتدعم العمل بدون إنترنت بعد أول تحميل.
+        تدعم العمل بدون إنترنت بعد أول تحميل.
       </p>
     </header>
 
@@ -80,6 +80,14 @@
         </div>
       </div>
 
+      <div class="mt-4 rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-200">
+        <div class="text-sm font-medium text-amber-800">سعر جرام الذهب عيار 21</div>
+        <div class="mt-2 flex items-end gap-3">
+          <div id="gram21Result" class="text-2xl font-extrabold text-amber-900">—</div>
+          <div class="pb-1 text-amber-900/70">ريال</div>
+        </div>
+      </div>
+
       <div class="mt-6 flex flex-wrap gap-3">
         <button id="resetBtn"
                 class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
@@ -107,7 +115,7 @@
     </section>
 
     <footer class="mt-8 text-xs text-slate-500">
-      يعمل بالكامل داخل المتصفح. جرّب فصل الإنترنت بعد أول فتح.
+      مدعوم عن طريق: <a href="https://muathye.com" class="text-emerald-900">muathye.com</a>
     </footer>
   </main>
 
@@ -121,6 +129,7 @@
     const usdRateEl = document.getElementById("usdRate");
     const ounceUsdEl = document.getElementById("ounceUsd");
     const resultEl = document.getElementById("result");
+    const gram21El = document.getElementById("gram21Result");
     const resetBtn = document.getElementById("resetBtn");
     const copyBtn = document.getElementById("copyBtn");
     const toastEl = document.getElementById("toast");
@@ -141,6 +150,12 @@
 
     function computePriceRial(ounceUsd, usdRate) {
       return (ounceUsd / OUNCE_GRAMS) * COIN_GRAMS * (KARAT_COIN / KARAT_OUNCE) * usdRate;
+    }
+
+    function computeGram21Rial(ounceUsd, usdRate) {
+      const gram24Usd = ounceUsd / OUNCE_GRAMS;
+      const gram21Usd = gram24Usd * (KARAT_COIN / KARAT_OUNCE);
+      return gram21Usd * usdRate;
     }
 
     function readInputs() {
@@ -165,8 +180,14 @@
 
     function render() {
       const { usdRate, ounceUsd } = readInputs();
-      if (!(usdRate > 0) || !(ounceUsd > 0)) { resultEl.textContent = "—"; return; }
+      if (!(usdRate > 0) || !(ounceUsd > 0)) {
+        resultEl.textContent = "—";
+        gram21El.textContent = "—";
+        return;
+      }
       const price = computePriceRial(ounceUsd, usdRate);
+      const gram21 = computeGram21Rial(ounceUsd, usdRate);
+      gram21El.textContent = formatRial(gram21);
       resultEl.textContent = formatRial(price);
       save({ usdRate, ounceUsd });
     }
