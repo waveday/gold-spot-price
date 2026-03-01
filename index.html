@@ -94,9 +94,14 @@
           إعادة للقيم الافتراضية
         </button>
 
-        <button id="copyBtn"
+        <button id="copyCoinBtn"
                 class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-300 hover:bg-slate-50">
-          نسخ السعر
+          نسخ سعر الجنيه
+        </button>
+
+        <button id="copyGramBtn"
+                class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-300 hover:bg-slate-50">
+          نسخ سعر الجرام
         </button>
 
         <span id="toast" class="hidden text-sm text-slate-600"></span>
@@ -115,7 +120,7 @@
     </section>
 
     <footer class="mt-8 text-xs text-slate-500">
-      مدعوم عن طريق: <a href="https://muathye.com" class="text-emerald-900">muathye.com</a>
+      مدعوم عن طريق: <a href="https://muathye.com" class="text-emerald-900">muathye.com</a> لمتابعه أسعار الأونصة <a href="https://www.investing.com/currencies/xau-usd">XAU/USD - Gold Spot US Dollar</a>
     </footer>
   </main>
 
@@ -131,7 +136,8 @@
     const resultEl = document.getElementById("result");
     const gram21El = document.getElementById("gram21Result");
     const resetBtn = document.getElementById("resetBtn");
-    const copyBtn = document.getElementById("copyBtn");
+    const copyCoinBtn = document.getElementById("copyCoinBtn");
+    const copyGramBtn = document.getElementById("copyGramBtn");
     const toastEl = document.getElementById("toast");
 
     const DEFAULTS = { usdRate: 535, ounceUsd: 5250 };
@@ -202,11 +208,22 @@
       showToast("تمت الإعادة للقيم الافتراضية");
     });
 
-    copyBtn.addEventListener("click", async () => {
-      const txt = resultEl.textContent;
-      if (!txt || txt === "—") return showToast("لا يوجد رقم لنسخه");
-      try { await navigator.clipboard.writeText(txt); showToast("تم نسخ السعر"); }
-      catch { showToast("لم يتمكن المتصفح من النسخ"); }
+    async function copyText(value, emptyMsg) {
+      if (!value || value === "—") return showToast(emptyMsg);
+      try {
+        await navigator.clipboard.writeText(value);
+        showToast("تم النسخ");
+      } catch (_) {
+        showToast("لم يتمكن المتصفح من النسخ");
+      }
+    }
+
+    copyCoinBtn.addEventListener("click", async () => {
+      await copyText(resultEl.textContent, "لا يوجد سعر جنيه لنسخه");
+    });
+
+    copyGramBtn.addEventListener("click", async () => {
+      await copyText(gram21El.textContent, "لا يوجد سعر جرام لنسخه");
     });
 
     (function init() {
